@@ -1,5 +1,5 @@
 
-var app = {
+const app = {
   addListenerToAction: () => {
     document.getElementById('addListButton').addEventListener('click', app.showAddListModal);
     document.querySelectorAll('.close').forEach(btn => btn.addEventListener('click', app.hideModals));
@@ -15,11 +15,25 @@ var app = {
   },
   handleAddListForm: (event) => {
     event.preventDefault();
-    const formData = new FormData(event.target);
-    return formData;
+    const listTitle = new FormData(event.target).get('name');
+    app.makeListInDOM(listTitle);
+    app.hideModals();
+  },
+  makeListInDOM: (listTitle) => {
+    //!
+    console.log(`value: ${listTitle}  type: ${typeof listTitle}`);
+    const template = document.getElementById('listTemplate');
+    const cloneTemplate = document.importNode(template.content, true);
+
+    const h2Title = cloneTemplate.getElementById('newListTitle');
+    h2Title.setAttribute('id', listTitle);
+    h2Title.textContent = listTitle;
+    
+    const kanbanBoard = document.getElementById('kabanBoard');
+    kanbanBoard.appendChild(cloneTemplate);
   },
   // ----------- INIT ----------- //
-  init: function () {
+  init: () => {
     app.addListenerToAction();
   }
 };
