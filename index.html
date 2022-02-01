@@ -128,7 +128,7 @@
           <div class="field">
             <label class="label">Nom</label>
             <div class="control">
-              <input type="text" class="input is-hidden hidden-input" name="list_id" value="" >
+              <input type="hidden" class="input hidden-input" name="list_id" value="" >
               <input type="text" class="input" name="name" value="" placeholder="Nom de la carte">
             </div>
           </div>
@@ -142,15 +142,15 @@
   </div>
   <!-- Template for list -->
   <template id="listTemplate">
-    <div class="column is-one-quarter panel" data-list-id="A">
+    <div class="column is-one-quarter panel" data-list-id="">
       <div class="panel-heading has-background-info">
         <div class="columns">
 
           <div class="column">
-            <h2 id="newListTitle" class="list-title has-text-white">Title</h2>
+            <h2 id="newListTitle" class="list-title has-text-white"></h2>
 
             <form action="" method="POST" class="is-hidden">
-              <input type="hidden" name="list-id" value="1">
+              <input type="hidden" name="list-id" value="">
               <div class="field has-addons">
                 <div class="control">
                   <input type="text" class="input is-small" name="list-name" value="" placeholder="Nom de la liste">
@@ -178,10 +178,10 @@
   </template>
   <!-- Template for card -->
   <template id="cardTemplate">
-    <div class="box" data-card-id="I">
+    <div class="box" data-card-id="">
       <div class="columns">
-        <div class="card-title column">
-          Title
+        <div class="column">
+          <h3 class="card-title"></h3>
         </div>
         <div class="column is-narrow">
           <a href="#">
