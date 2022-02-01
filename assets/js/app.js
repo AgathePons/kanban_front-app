@@ -104,7 +104,7 @@ const app = {
         }
       }
     } else {
-      console.log('something went wrong');
+      console.log('get lists and cards: something went wrong');
     }
   },
   // ----------- INIT ----------- //
