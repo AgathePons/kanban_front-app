@@ -47,7 +47,7 @@ const app = {
     
     const cloneTemplate = document.importNode(template.content, true);
     const panel = cloneTemplate.firstElementChild;
-    panel.setAttribute('data-list-id', listTitle.replace(/\s/g, ''));
+    panel.setAttribute('data-list-id', listTitle.replace(/\s/g, ''));//remove space
 
     const listTitleH = cloneTemplate.getElementById('newListTitle');
     listTitleH.setAttribute('id', listTitle.replace(/\s/g, ''));
