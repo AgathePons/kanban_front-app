@@ -20,62 +20,6 @@
 
         <div class="column is-full">
           <div class="card-lists columns" id="kabanBoard">
-            <!-- list -->
-            <div class="column is-one-quarter panel" data-list-id="A">
-              <div class="panel-heading has-background-info">
-                <div class="columns">
-
-                  <div class="column">
-                    <h2 class="has-text-white">Perso</h2>
-
-                    <form action="" method="POST" class="is-hidden">
-                      <input type="hidden" name="list-id" value="1">
-                      <div class="field has-addons">
-                        <div class="control">
-                          <input type="text" class="input is-small" name="list-name" value=""
-                            placeholder="Nom de la liste">
-                        </div>
-                        <div class="control">
-                          <button class="button is-small is-success">Valider</button>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-
-                  <div class="column is-narrow">
-                    <a href="#" class="add-card-btn is-pulled-right">
-                      <span class="icon is-small has-text-white">
-                        <i class="fas fa-plus"></i>
-                      </span>
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div class="panel-block is-block has-background-light">
-                <!-- card -->
-                <div class="box" data-card-id="I">
-                  <div class="columns">
-                    <div class="column">
-                      Faire les courses
-                    </div>
-                    <div class="column is-narrow">
-                      <a href="#">
-                        <span class="icon is-small has-text-primary">
-                          <i class="fas fa-pencil-alt"></i>
-                        </span>
-                      </a>
-                      <a href="#">
-                        <span class="icon is-small has-text-danger">
-                          <i class="fas fa-trash-alt"></i>
-                        </span>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-                <!--/ card -->
-              </div>
-            </div>
-            <!--/ list -->
 
           </div>
         </div>
@@ -129,7 +73,7 @@
             <label class="label">Nom</label>
             <div class="control">
               <input type="hidden" class="input hidden-input" name="list_id" value="" >
-              <input type="text" class="input" name="name" value="" placeholder="Nom de la carte">
+              <input type="text" class="input" name="content" value="" placeholder="Nom de la carte">
             </div>
           </div>
         </section>
@@ -142,6 +86,7 @@
   </div>
   <!-- Template for list -->
   <template id="listTemplate">
+    <!-- list -->
     <div class="column is-one-quarter panel" data-list-id="">
       <div class="panel-heading has-background-info">
         <div class="columns">
@@ -175,9 +120,11 @@
         <!-- Card comes here -->
       </div>
     </div>
+    <!-- /list -->
   </template>
   <!-- Template for card -->
   <template id="cardTemplate">
+    <!-- card -->
     <div class="box" data-card-id="">
       <div class="columns">
         <div class="column">
@@ -197,6 +144,7 @@
         </div>
       </div>
     </div>
+    <!-- /card -->
   </template>
   <!-- Chargement de mon fichier JS -->
   <script src="./assets/js/app.js"></script>

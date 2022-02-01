@@ -36,9 +36,9 @@ const app = {
     // ou const cloneTemplate = template.content.cloneNode(true);
     // modify content
     const panel = cloneTemplate.firstElementChild;
-    panel.setAttribute('data-list-id', formData.get('name').replace(/\s/g, ''));
+    panel.setAttribute('data-list-id', formData.get('id'));
     const listTitleH = cloneTemplate.getElementById('newListTitle');
-    listTitleH.setAttribute('id', formData.get('name').replace(/\s/g, ''));
+    listTitleH.setAttribute('id', formData.get('id'));
     listTitleH.textContent = formData.get('name');
     // set new event listener on new list
     cloneTemplate.querySelector('.add-card-btn').addEventListener('click', app.showAddCardModal);
@@ -46,25 +46,53 @@ const app = {
     const kanbanBoard = document.getElementById('kabanBoard');
     kanbanBoard.appendChild(cloneTemplate);
   },
-  handleAddCardForm: (event) => {
+  handleAddCardForm: function(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     app.makeCardInDOM(formData);
     app.hideModals();
   },
-  makeCardInDOM: (formData, cardTitle, listId) => {
+  makeCardInDOM: function(formData) {
     const template = document.getElementById('cardTemplate');
     const cloneTemplate = document.importNode(template.content, true);
     // set the title
     const cardTitleDiv = cloneTemplate.querySelector('.card-title');
-    cardTitleDiv.textContent = formData.get('name');
+    cardTitleDiv.textContent = formData.get('content');
     // append in the list, in the card-container div
     const list = document.querySelector(`.panel[data-list-id="${formData.get('list_id')}"]`);
     const cardContainer = list.querySelector('.card-container');
     cardContainer.appendChild(cloneTemplate);
   },
+  // ----------- FETCH ----------- //
+  base_url: 'http://localhost:3000/',
+  getListsFromAPI: async function() {
+    const response = await fetch(`${this.base_url}lists`, {
+      method: 'GET'
+    });
+    if(response.status === 200) {
+      const lists = await response.json();
+      console.log(lists);
+      // for each list
+      for(const list of lists) {
+        const formDataList = new FormData();
+        formDataList.append('name', list.name);
+        formDataList.append('id', list.id);
+        app.makeListInDOM(formDataList);
+        // for each card in a list
+        for(const card of list.cards) {
+          const formDataCard = new FormData();
+          formDataCard.append('content', card.content);
+          formDataCard.append('list_id', card.list_id);
+          app.makeCardInDOM(formDataCard);
+        }
+      }
+    } else {
+      console.log('something went wrong');
+    }
+  },
   // ----------- INIT ----------- //
-  init: () => {
+  init: function() {
+    app.getListsFromAPI();
     app.addListenerToAction();
   }
 };
