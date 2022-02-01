@@ -23,10 +23,19 @@ const app = {
     hiddenIdInput.setAttribute('value', listId);
     addCardModal.classList.add('is-active');
   },
-  handleAddListForm: function(event) {
+  handleAddListForm: async function(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-    app.makeListInDOM(formData);
+    // fetch
+    const response = await fetch(`${app.base_url}lists`, {
+      method: 'POST',
+      body: formData
+    });
+    if(response.status === 201) {
+      app.makeListInDOM(formData);
+    } else {
+      console.log('post /lists something went wrond')
+    }
     app.hideModals();
   },
   makeListInDOM: function(formData) {
@@ -46,10 +55,18 @@ const app = {
     const kanbanBoard = document.getElementById('kabanBoard');
     kanbanBoard.appendChild(cloneTemplate);
   },
-  handleAddCardForm: function(event) {
+  handleAddCardForm: async function(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-    app.makeCardInDOM(formData);
+    const response = await fetch(`${app.base_url}cards`, {
+      method: 'POST',
+      body: formData
+    });
+    if(response.status === 201) {
+      app.makeCardInDOM(formData);
+    } else {
+      console.log('post /cards something went wrond')
+    }
     app.hideModals();
   },
   makeCardInDOM: function(formData) {
@@ -66,7 +83,7 @@ const app = {
   // ----------- FETCH ----------- //
   base_url: 'http://localhost:3000/',
   getListsFromAPI: async function() {
-    const response = await fetch(`${this.base_url}lists`, {
+    const response = await fetch(`${app.base_url}lists`, {
       method: 'GET'
     });
     if(response.status === 200) {
