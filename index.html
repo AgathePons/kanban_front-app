@@ -74,6 +74,7 @@
             <div class="control">
               <input type="hidden" class="input hidden-input" name="list_id" value="" >
               <input type="text" class="input" name="content" value="" placeholder="Nom de la carte">
+              <input type="color" class="input" name="color">
             </div>
           </div>
         </section>
@@ -126,23 +127,36 @@
   <template id="cardTemplate">
     <!-- card -->
     <div class="box" data-card-id="">
-      <div class="columns">
+      <div class="card--content columns">
         <div class="column">
           <h3 class="card-title"></h3>
         </div>
         <div class="column is-narrow">
-          <a href="#">
+          <a href="#" class="edit-card-btn">
             <span class="icon is-small has-text-primary">
               <i class="fas fa-pencil-alt"></i>
             </span>
           </a>
-          <a href="#">
+          <a href="#" class="delete-card-btn">
             <span class="icon is-small has-text-danger">
               <i class="fas fa-trash-alt"></i>
             </span>
           </a>
         </div>
       </div>
+      <form action="" method="POST" class="edit-card-form is-hidden">
+        <div class="field">
+          <div class="control">
+            <input type="text" class="input is-small" name="content" value="" placeholder="Nom de la carte">
+          </div>
+          <div class="control">
+            <input type="color" class="input is-small" name="color">
+          </div>
+          <div class="control">
+            <button class="button is-small is-success">Valider</button>
+          </div>
+        </div>
+      </form>
     </div>
     <!-- /card -->
   </template>
