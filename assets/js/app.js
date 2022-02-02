@@ -122,7 +122,7 @@ const app = {
         // hide back
         app.hideEditCard(cardId);
       } else {
-        console.log('post /cards something went wrond')
+        console.log('post /cards something went wrond');
       }
     } catch(error) {
       console.error('handle edit card form:', error);
@@ -172,8 +172,22 @@ const app = {
     cardContainer.appendChild(cloneTemplate);
   },
   // DELETE
-  deleteCard: async function() {
-    console.log('clic delete card btn');
+  deleteCard: async function(event) {
+    event.preventDefault();
+    const card = event.target.closest('.box');
+    const cardId = card.dataset.cardId;
+    try {
+      const response = await fetch(`${app.base_url}cards/${cardId}`, {
+        method: 'DELETE'
+      });
+      if(response.status === 204) {
+        card.remove();
+      } else {
+        console.log('delete /cards something went wrond');
+      }
+    } catch(error) {
+      console.error('delete card btn:', error);
+    }
   },
   // ----------- FETCH ----------- //
   getListsFromAPI: async function() {
