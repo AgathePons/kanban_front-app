@@ -145,6 +145,7 @@ const app = {
     cloneTemplate.querySelector('.add-card-btn').addEventListener('click', app.showAddCardModal);
     cloneTemplate.querySelector('.list-title').addEventListener('dblclick', app.showEditList);
     cloneTemplate.querySelector('.edit-list-form').addEventListener('submit', app.handleEditListForm);
+    cloneTemplate.querySelector('.delete-list-btn').addEventListener('click', app.deleteList);
     // append in DOM
     const kanbanBoard = document.getElementById('kabanBoard');
     kanbanBoard.appendChild(cloneTemplate);
@@ -172,6 +173,23 @@ const app = {
     cardContainer.appendChild(cloneTemplate);
   },
   // DELETE
+  deleteList: async function(event) {
+    event.preventDefault();
+    const list = event.target.closest('.panel');
+    const listId = list.dataset.listId;
+    try {
+      const response = await fetch(`${app.base_url}lists/${listId}`, {
+        method: 'DELETE'
+      });
+      if(response.status === 204) {
+        list.remove();
+      } else {
+        console.log('delete /lists something went wrond');
+      }
+    } catch(error) {
+      console.error('delete list btn:', error);
+    }
+  },
   deleteCard: async function(event) {
     event.preventDefault();
     const card = event.target.closest('.box');
