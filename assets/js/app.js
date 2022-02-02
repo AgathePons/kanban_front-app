@@ -70,14 +70,16 @@ const app = {
     }
     app.hideModals();
   },
-  makeCardInDOM: function(formData) {
+  makeCardInDOM: function(card) {
     const template = document.getElementById('cardTemplate');
     const cloneTemplate = document.importNode(template.content, true);
     // set the title
     const cardTitleDiv = cloneTemplate.querySelector('.card-title');
-    cardTitleDiv.textContent = formData.get('content');
+    cardTitleDiv.textContent = card.content;
+    //set the id
+    cloneTemplate.querySelector('.box').dataset.cardId = card.id;
     // append in the list, in the card-container div
-    const list = document.querySelector(`.panel[data-list-id="${formData.get('list_id')}"]`);
+    const list = document.querySelector(`.panel[data-list-id="${card.list_id}"]`);
     const cardContainer = list.querySelector('.card-container');
     cardContainer.appendChild(cloneTemplate);
   },
@@ -92,16 +94,13 @@ const app = {
         console.log(lists);
         // for each list
         for(const list of lists) {
-          /* const formDataList = new FormData();
-          formDataList.append('name', list.name);
-          formDataList.append('id', list.id); */
           app.makeListInDOM(list);
           // for each card in a list
           for(const card of list.cards) {
-            const formDataCard = new FormData();
+            /* const formDataCard = new FormData();
             formDataCard.append('content', card.content);
-            formDataCard.append('list_id', card.list_id);
-            app.makeCardInDOM(formDataCard);
+            formDataCard.append('list_id', card.list_id); */
+            app.makeCardInDOM(card);
           }
         }
       } else {
