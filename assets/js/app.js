@@ -1,11 +1,12 @@
 
 const app = {
+  base_url: 'http://localhost:3000/',
   addListenerToAction: function() {
     document.getElementById('addListButton').addEventListener('click', app.showAddListModal);
     document.querySelectorAll('.add-card-btn').forEach(btn => btn.addEventListener('click', app.showAddCardModal));
     document.querySelectorAll('.close').forEach(btn => btn.addEventListener('click', app.hideModals));
     document.querySelector('#addListModal form').addEventListener('submit', app.handleAddListForm);
-    document.querySelector('#addCardModal form').addEventListener('submit', app.handleAddCardForm);
+    //document.querySelector('#addCardModal form').addEventListener('submit', app.handleAddCardForm);
   },
   showAddListModal: function() {
     document.getElementById('addListModal').classList.add('is-active');
@@ -38,17 +39,17 @@ const app = {
     }
     app.hideModals();
   },
-  makeListInDOM: function(formData) {
+  makeListInDOM: function(list) {
     // get and import template
     const template = document.getElementById('listTemplate');
     const cloneTemplate = document.importNode(template.content, true);
-    // ou const cloneTemplate = template.content.cloneNode(true);
+    //TODO ou const cloneTemplate = template.content.cloneNode(true);
     // modify content
     const panel = cloneTemplate.firstElementChild;
-    panel.setAttribute('data-list-id', formData.get('id'));
+    panel.dataset.listId = list.id;
+    //TODO ou panel.setAttribute('data-list-id', list.id);
     const listTitleH = cloneTemplate.getElementById('newListTitle');
-    listTitleH.setAttribute('id', formData.get('id'));
-    listTitleH.textContent = formData.get('name');
+    listTitleH.textContent = list.name;
     // set new event listener on new list
     cloneTemplate.querySelector('.add-card-btn').addEventListener('click', app.showAddCardModal);
     // append in DOM
@@ -81,31 +82,35 @@ const app = {
     cardContainer.appendChild(cloneTemplate);
   },
   // ----------- FETCH ----------- //
-  base_url: 'http://localhost:3000/',
   getListsFromAPI: async function() {
-    const response = await fetch(`${app.base_url}lists`, {
-      method: 'GET'
-    });
-    if(response.status === 200) {
-      const lists = await response.json();
-      console.log(lists);
-      // for each list
-      for(const list of lists) {
-        const formDataList = new FormData();
-        formDataList.append('name', list.name);
-        formDataList.append('id', list.id);
-        app.makeListInDOM(formDataList);
-        // for each card in a list
-        for(const card of list.cards) {
-          const formDataCard = new FormData();
-          formDataCard.append('content', card.content);
-          formDataCard.append('list_id', card.list_id);
-          app.makeCardInDOM(formDataCard);
+    try {
+      const response = await fetch(`${app.base_url}lists`, {
+        method: 'GET'
+      });
+      if(response.status === 200) {
+        const lists = await response.json();
+        console.log(lists);
+        // for each list
+        for(const list of lists) {
+          /* const formDataList = new FormData();
+          formDataList.append('name', list.name);
+          formDataList.append('id', list.id); */
+          app.makeListInDOM(list);
+          // for each card in a list
+          for(const card of list.cards) {
+            const formDataCard = new FormData();
+            formDataCard.append('content', card.content);
+            formDataCard.append('list_id', card.list_id);
+            app.makeCardInDOM(formDataCard);
+          }
         }
+      } else {
+        console.log('get lists and cards: something went wrong');
       }
-    } else {
-      console.log('get lists and cards: something went wrong');
+    } catch(error) {
+      console.error('get all lists:', error);
     }
+    
   },
   // ----------- INIT ----------- //
   init: function() {
