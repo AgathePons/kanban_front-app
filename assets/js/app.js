@@ -174,6 +174,11 @@ const app = {
     event.preventDefault();
     const list = event.target.closest('.panel');
     const listId = list.dataset.listId;
+    // check if list is empty
+    const cardInDOM = list.querySelector('.box');
+    if(cardInDOM) return alert('Impossible de supprimer cette liste car elle n\'est pas !');
+    // ask confirm
+    if(!confirm('Voulez-vous vraiment supprimer cette liste ?')) return;
     try {
       const response = await fetch(`${app.base_url}lists/${listId}`, {
         method: 'DELETE'
@@ -204,7 +209,7 @@ const app = {
       console.error('delete card btn:', error);
     }
   },
-  // ----------- FETCH ----------- //
+  // ----------- FETCH GET ----------- //
   getListsFromAPI: async function() {
     try {
       const response = await fetch(`${app.base_url}lists`, {
