@@ -85,6 +85,35 @@
       </form>
     </div>
   </div>
+  <!-- Add tag to a card modal -->
+  <div class="modal" id="addTagToCard">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <form action="" method="POST">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Ajouter un tag à la carte</p>
+          <button class="delete close" type="button" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+          <div class="field">
+            <label class="label">Tag</label>
+            <div class="control">
+              <input type="hidden" class="input hidden-input" name="card_id" value="" >
+              <div class="select">
+                <select class="tag-list-select">
+                  <option></option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+        <footer class="modal-card-foot">
+          <button class="button is-success">Save changes</button>
+          <button class="button close" type="button">Cancel</button>
+        </footer>
+      </form>
+    </div>
+  </div>
   <!-- Template for list -->
   <template id="listTemplate">
     <!-- list -->
@@ -166,6 +195,12 @@
           </div>
         </div>
       </form>
+      <button class="add-tag-card-btn button is-small is-dark">
+        <span class="icon is-small has-text-white">
+          <i class="fas fa-tags"></i>
+        </span>
+        <span>Ajouter un tag</span>
+        </button>
       <div class="card-tag-bloc tags">
         
       </div>

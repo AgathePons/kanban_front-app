@@ -21,6 +21,15 @@ const app = {
     hiddenIdInput.setAttribute('value', listId);
     addCardModal.classList.add('is-active');
   },
+  showAddTagCardModal: function(event) {
+    const cardId = event.target.closest('.box').dataset.cardId;
+    const addTagToCardModal = document.getElementById('addTagToCard');
+    const hiddenIdInput = addTagToCardModal.querySelector('.hidden-input');
+    hiddenIdInput.value = cardId;
+    addTagToCardModal.classList.add('is-active');
+    //!
+    console.log('click add tag to card id', cardId);
+  },
   hideModals: function() {
     document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('is-active'));
   },
@@ -164,12 +173,13 @@ const app = {
     cardDOM.querySelector('.edit-card-btn').addEventListener('click', app.showEditCard);
     cardDOM.querySelector('.delete-card-btn').addEventListener('click', app.deleteCard);
     cardDOM.querySelector('.edit-card-form').addEventListener('submit', app.handleEditCardForm);
+    cardDOM.querySelector('.add-tag-card-btn').addEventListener('click', app.showAddTagCardModal);
     // append in the list, in the card-container div
     const list = document.querySelector(`.panel[data-list-id="${card.list_id}"]`);
     const cardContainer = list.querySelector('.card-container');
     cardContainer.appendChild(cloneTemplate);
   },
-  makeTagInDOM: function(cardId, tag) {
+  makeTagInCardInDOM: function(cardId, tag) {
     const cardTagBloc = document.querySelector(`.box[data-card-id="${cardId}"] .card-tag-bloc`);
     const tagSpan = document.createElement('span');
     tagSpan.classList.add('tag', 'is-link');
@@ -178,6 +188,13 @@ const app = {
     tagSpan.dataset.tagId = tag.id;
     tagSpan.addEventListener('dblclick', app.removeTag);
     cardTagBloc.appendChild(tagSpan);
+  },
+  makeTagSelectModalInDOM: function(tag) {
+    console.log('make in dom the tag', tag.name);
+    const tagSelectOption = document.createElement('option');
+    tagSelectOption.textContent = tag.name;
+    const tagModalSelect = document.getElementById('addTagToCard').querySelector('.tag-list-select');
+    tagModalSelect.appendChild(tagSelectOption);
   },
   // REMOVE
   removeTag: async function(event) {
@@ -254,9 +271,27 @@ const app = {
           for(const card of list.cards) {
             app.makeCardInDOM(card);
             for(const tag of card.tags) {
-              app.makeTagInDOM(card.id, tag);
+              app.makeTagInCardInDOM(card.id, tag);
             }
           }
+        }
+      } else {
+        console.log('get lists and cards: something went wrong');
+      }
+    } catch(error) {
+      console.error('get all lists:', error);
+    }
+  },
+  getTagsFromAPI: async function() {
+    try {
+      const response = await fetch(`${app.base_url}tags`, {
+        method: 'GET'
+      });
+      if(response.status === 200) {
+        const tags = await response.json();
+        // for each list
+        for(const tag of tags) {
+          app.makeTagSelectModalInDOM(tag);
         }
       } else {
         console.log('get lists and cards: something went wrong');
@@ -268,6 +303,7 @@ const app = {
   // ----------- INIT ----------- //
   init: function() {
     app.getListsFromAPI();
+    app.getTagsFromAPI();
     app.addListenerToAction();
     //TODO test SortableJS
     new Sortable(kabanBoard, {
