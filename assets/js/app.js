@@ -169,6 +169,36 @@ const app = {
     const cardContainer = list.querySelector('.card-container');
     cardContainer.appendChild(cloneTemplate);
   },
+  makeTagInDOM: function(cardId, tag) {
+    const cardTagBloc = document.querySelector(`.box[data-card-id="${cardId}"] .card-tag-bloc`);
+    const tagSpan = document.createElement('span');
+    tagSpan.classList.add('tag', 'is-link');
+    tagSpan.textContent = tag.name;
+    tagSpan.style.backgroundColor = tag.color;
+    tagSpan.dataset.tagId = tag.id;
+    tagSpan.addEventListener('dblclick', app.removeTag);
+    cardTagBloc.appendChild(tagSpan);
+  },
+  // REMOVE
+  removeTag: async function(event) {
+    const tag = event.target
+    const tagId = tag.dataset.tagId;
+    const cardId = event.target.closest('.box').dataset.cardId;
+    //!
+    //console.log(`on veut enlever le tag ${tagId} de la carte ${cardId}`);
+    try {
+      const response = await fetch(`${app.base_url}cards/${cardId}/tags/${tagId}`, {
+        method: 'DELETE'
+      });
+      if(response.status === 200) {
+        tag.remove();
+      } else {
+        console.log('delete /cards something went wrond');
+      }
+    } catch(error) {
+      console.error('remove tag:', error);
+    }
+  },
   // DELETE
   deleteList: async function(event) {
     event.preventDefault();
@@ -223,6 +253,9 @@ const app = {
           // for each card in a list
           for(const card of list.cards) {
             app.makeCardInDOM(card);
+            for(const tag of card.tags) {
+              app.makeTagInDOM(card.id, tag);
+            }
           }
         }
       } else {
@@ -236,6 +269,11 @@ const app = {
   init: function() {
     app.getListsFromAPI();
     app.addListenerToAction();
+    //TODO test SortableJS
+    new Sortable(kabanBoard, {
+      animation: 150,
+      ghostClass: 'blue-background-class'
+    })
   }
 };
 
