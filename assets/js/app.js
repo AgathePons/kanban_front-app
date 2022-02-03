@@ -141,6 +141,9 @@ const app = {
     panel.dataset.listId = list.id;
     //TODO ou panel.setAttribute('data-list-id', list.id);
     cloneTemplate.querySelector('.list-title').textContent = list.name;
+    // set the actuel value in form
+    cloneTemplate.querySelector('.edit-list-form input[name="name"]').value = list.name;
+    cloneTemplate.querySelector('.edit-list-form input[name="list-id"]').value = list.id;
     // set new event listener on new list
     cloneTemplate.querySelector('.add-card-btn').addEventListener('click', app.showAddCardModal);
     cloneTemplate.querySelector('.list-title').addEventListener('dblclick', app.showEditList);
