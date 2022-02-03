@@ -83,22 +83,19 @@ const app = {
   },
   handleEditListForm: async function(event) {
     event.preventDefault();
-    const listPanel = event.target.closest('.panel');
-    const listId = listPanel.dataset.listId;
-    const listTitle = listPanel.querySelector('.list-title');
+    const formData = new FormData(event.target);
+    const listId = formData.get('list-id');
+    const listTitle = event.target.closest('.panel').querySelector('.list-title');
     try {
-      const formData = new FormData(event.target);
       const response = await fetch(`${app.base_url}lists/${listId}`, {
         method: 'PATCH',
         body: formData
       });
       if(response.status === 200) {
-        const list = await response.json();
-        listTitle.textContent = list.name;
-        // hide back
+        listTitle.textContent = formData.get('name');
         app.hideEditList(listId);
       } else {
-        console.log('post /cards something went wrond')
+        console.log('post /cards something went wrong')
       }
     } catch(error) {
       console.error('handle edit list form:', error);
@@ -106,20 +103,18 @@ const app = {
   },
   handleEditCardForm: async function(event) {
     event.preventDefault();
+    const formData = new FormData(event.target);
     const cardBox = event.target.closest('.box');
-    const cardId = cardBox.dataset.cardId;
+    const cardId = formData.get('card-id');
     const cardContent = cardBox.querySelector('.card-title');
     try {
-      const formData = new FormData(event.target);
       const response = await fetch(`${app.base_url}cards/${cardId}`, {
         method: 'PATCH',
         body: formData
       });
       if(response.status === 200) {
-        const card = await response.json();
-        cardContent.textContent = card.content;
-        cardBox.style.backgroundColor = card.color;
-        // hide back
+        cardContent.textContent = formData.get('content');
+        cardBox.style.backgroundColor = formData.get('color');
         app.hideEditCard(cardId);
       } else {
         console.log('post /cards something went wrond');
@@ -127,8 +122,6 @@ const app = {
     } catch(error) {
       console.error('handle edit card form:', error);
     }
-    // hide back
-    app.hideEditCard(cardId);
   },
   // MAKE IN DOM
   makeListInDOM: function(list) {
@@ -137,13 +130,13 @@ const app = {
     const cloneTemplate = document.importNode(template.content, true);
     //TODO ou const cloneTemplate = template.content.cloneNode(true);
     // modify content
-    const panel = cloneTemplate.firstElementChild;
+    const panel = cloneTemplate.querySelector('.panel');
     panel.dataset.listId = list.id;
     //TODO ou panel.setAttribute('data-list-id', list.id);
     cloneTemplate.querySelector('.list-title').textContent = list.name;
-    // set the actuel value in form
-    cloneTemplate.querySelector('.edit-list-form input[name="name"]').value = list.name;
-    cloneTemplate.querySelector('.edit-list-form input[name="list-id"]').value = list.id;
+    // set the actual value in form
+    panel.querySelector('.edit-list-form input[name="name"]').value = list.name;
+    panel.querySelector('.edit-list-form input[name="list-id"]').value = list.id;
     // set new event listener on new list
     cloneTemplate.querySelector('.add-card-btn').addEventListener('click', app.showAddCardModal);
     cloneTemplate.querySelector('.list-title').addEventListener('dblclick', app.showEditList);
@@ -164,6 +157,7 @@ const app = {
     cardDOM.dataset.cardId = card.id;
     cardDOM.style.backgroundColor = card.color;
     //set the actual value in form
+    cardDOM.querySelector('.edit-card-form input[name="card-id"]').value = card.id;
     cardDOM.querySelector('.edit-card-form input[name="content"]').value = card.content;
     cardDOM.querySelector('.edit-card-form input[name="color"]').value = card.color;
     // set the buttons event listener
