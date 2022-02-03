@@ -89,7 +89,7 @@
   <div class="modal" id="addTagToCard">
     <div class="modal-background"></div>
     <div class="modal-card">
-      <form action="" method="POST">
+      <form action="" method="POST" data-card-id="">
         <header class="modal-card-head">
           <p class="modal-card-title">Ajouter un tag à la carte</p>
           <button class="delete close" type="button" aria-label="close"></button>
@@ -98,10 +98,10 @@
           <div class="field">
             <label class="label">Tag</label>
             <div class="control">
-              <input type="hidden" class="input hidden-input" name="card_id" value="" >
+              <!-- <input type="hidden" class="input hidden-input" name="card_id" value="" > -->
               <div class="select">
-                <select class="tag-list-select">
-                  <option></option>
+                <select name="id" class="tag-list-select">
+                  <option value=""></option>
                 </select>
               </div>
             </div>

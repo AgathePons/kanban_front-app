@@ -6,6 +6,7 @@ const app = {
     document.querySelectorAll('.close').forEach(btn => btn.addEventListener('click', app.hideModals));
     document.querySelector('#addListModal form').addEventListener('submit', app.handleAddListForm);
     document.querySelector('#addCardModal form').addEventListener('submit', app.handleAddCardForm);
+    document.querySelector('#addTagToCard form').addEventListener('submit', app.handleAddTagToCardForm);
   },
   // MODALS
   showAddListModal: function() {
@@ -24,8 +25,9 @@ const app = {
   showAddTagCardModal: function(event) {
     const cardId = event.target.closest('.box').dataset.cardId;
     const addTagToCardModal = document.getElementById('addTagToCard');
-    const hiddenIdInput = addTagToCardModal.querySelector('.hidden-input');
-    hiddenIdInput.value = cardId;
+    //const hiddenIdInput = addTagToCardModal.querySelector('.hidden-input');
+    //hiddenIdInput.value = cardId;
+    addTagToCardModal.querySelector('form').dataset.cardId = cardId;
     addTagToCardModal.classList.add('is-active');
     //!
     console.log('click add tag to card id', cardId);
@@ -88,6 +90,33 @@ const app = {
       app.hideModals();
     } catch(error) {
       console.error('handle card form:', error);
+    }
+  },
+  handleAddTagToCardForm: async function(event) {
+    event.preventDefault();
+    const cardId = event.target.dataset.cardId;
+    const formData = new FormData(event.target);
+    try {
+      
+      const response = await fetch(`${app.base_url}cards/${cardId}/tags`, {
+        method: 'POST',
+        body: formData
+      });
+      if(response.status === 200) {
+        // empty the card tag bloc and refill with new list of tags
+        const card = await response.json();
+        const tags = card.tags;
+        const cardTagBloc = document.querySelector(`.box[data-card-id="${cardId}"] .card-tag-bloc`);
+        cardTagBloc.innerHTML = '';
+        for(const tag of tags) {
+          app.makeTagInCardInDOM(cardId, tag);
+        }
+      } else {
+        console.log('post /cards something went wrond')
+      }
+      app.hideModals();
+    } catch(error) {
+      console.error('handle tag to card form:', error);
     }
   },
   handleEditListForm: async function(event) {
@@ -193,6 +222,7 @@ const app = {
     console.log('make in dom the tag', tag.name);
     const tagSelectOption = document.createElement('option');
     tagSelectOption.textContent = tag.name;
+    tagSelectOption.value = tag.id;
     const tagModalSelect = document.getElementById('addTagToCard').querySelector('.tag-list-select');
     tagModalSelect.appendChild(tagSelectOption);
   },
