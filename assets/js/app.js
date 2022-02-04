@@ -104,11 +104,8 @@ const app = {
         // empty the card tag bloc and refill with new list of tags
         const card = await response.json();
         const tags = card.tags;
-        const cardTagBloc = document.querySelector(`.box[data-card-id="${cardId}"] .card-tag-bloc`);
-        cardTagBloc.innerHTML = '';
-        for(const tag of tags) {
-          app.makeTagInCardInDOM(cardId, tag);
-        }
+        const tag = card.tags.find((tag) => tag.id == formData.get('id'));
+        app.makeTagInCardInDOM(cardId, tag);
       } else {
         console.log('post /cards something went wrond')
       }
