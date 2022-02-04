@@ -25,12 +25,8 @@ const app = {
   showAddTagCardModal: function(event) {
     const cardId = event.target.closest('.box').dataset.cardId;
     const addTagToCardModal = document.getElementById('addTagToCard');
-    //const hiddenIdInput = addTagToCardModal.querySelector('.hidden-input');
-    //hiddenIdInput.value = cardId;
     addTagToCardModal.querySelector('form').dataset.cardId = cardId;
     addTagToCardModal.classList.add('is-active');
-    //!
-    console.log('click add tag to card id', cardId);
   },
   hideModals: function() {
     document.querySelectorAll('.modal').forEach(modal => modal.classList.remove('is-active'));
@@ -225,7 +221,7 @@ const app = {
     tagSpan.textContent = tag.name;
     tagSpan.style.backgroundColor = tag.color;
     tagSpan.dataset.tagId = tag.id;
-    tagSpan.addEventListener('dblclick', app.removeTag);
+    tagSpan.addEventListener('dblclick', app.removeTagFromCard);
     cardTagBloc.appendChild(tagSpan);
   },
   makeTagSelectModalInDOM: function(tag) {
@@ -264,7 +260,7 @@ const app = {
     });
   },
   // REMOVE
-  removeTag: async function(event) {
+  removeTagFromCard: async function(event) {
     const tag = event.target
     const tagId = tag.dataset.tagId;
     const cardId = event.target.closest('.box').dataset.cardId;
@@ -337,6 +333,7 @@ const app = {
           // for each card in a list
           for(const card of list.cards) {
             app.makeCardInDOM(card);
+            // for each tag in a card
             for(const tag of card.tags) {
               app.makeTagInCardInDOM(card.id, tag);
             }
