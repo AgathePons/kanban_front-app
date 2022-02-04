@@ -60,6 +60,8 @@ const app = {
   handleAddListForm: async function(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
+    // prevent empty title list
+    if(!formData.get('name')) return console.warn('Le nom de la liste ne doit pas être vide');
     // fetch
     const response = await fetch(`${app.base_url}lists`, {
       method: 'POST',
@@ -170,11 +172,19 @@ const app = {
     // modify content
     const panel = cloneTemplate.querySelector('.panel');
     panel.dataset.listId = list.id;
+    panel.id = list.id;
     //TODO ou panel.setAttribute('data-list-id', list.id);
     cloneTemplate.querySelector('.list-title').textContent = list.name;
     // set the actual value in form
     panel.querySelector('.edit-list-form input[name="name"]').value = list.name;
     panel.querySelector('.edit-list-form input[name="list-id"]').value = list.id;
+    // set Sortable instance
+    const cardContainer = cloneTemplate.querySelector('.card-container');
+    new Sortable(cardContainer, {
+      group: 'list',
+      draggable: '.box',
+      onEnd: app.onCardDrop
+    });
     // set new event listener on new list
     cloneTemplate.querySelector('.add-card-btn').addEventListener('click', app.showAddCardModal);
     cloneTemplate.querySelector('.list-title').addEventListener('dblclick', app.showEditList);
@@ -219,12 +229,39 @@ const app = {
     cardTagBloc.appendChild(tagSpan);
   },
   makeTagSelectModalInDOM: function(tag) {
-    console.log('make in dom the tag', tag.name);
     const tagSelectOption = document.createElement('option');
     tagSelectOption.textContent = tag.name;
     tagSelectOption.value = tag.id;
     const tagModalSelect = document.getElementById('addTagToCard').querySelector('.tag-list-select');
     tagModalSelect.appendChild(tagSelectOption);
+  },
+  // DRAG N DROP UPDATE
+  onCardDrop: async function (event) {
+    // get origin & destination list
+    const originList = event.from;
+    const destinationList = event.to;
+    // get origin/ destination cards and call fetch patch function
+    const originCards = originList.querySelectorAll('.box');
+    await app.moveCards(originCards);
+    const destinationCards = destinationList.querySelectorAll('.box');
+    await app.moveCards(destinationCards);
+  },
+  moveCards: async function(cards) {
+    cards.forEach( async (card, index) => {
+      const id = card.dataset.cardId;
+      const listId = card.closest('.panel').dataset.listId;
+      const formData = new FormData();
+      formData.append('position', index);
+      formData.append('list_id', listId);
+      try {
+        await fetch(`${app.base_url}cards/${id}`, {
+          method: 'PATCH',
+          body: formData
+        });
+      } catch(error) {
+      console.error('on card drag n drop:', error);
+    }
+    });
   },
   // REMOVE
   removeTag: async function(event) {
