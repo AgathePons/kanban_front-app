@@ -6,3 +6,7 @@ body {
 .card-lists {
   overflow-x: auto;
 }
+
+.card-tag-bloc {
+  margin-top: 1rem;
+}
